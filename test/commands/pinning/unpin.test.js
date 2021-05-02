@@ -1,7 +1,7 @@
-import axios from 'axios';
-import unpin from'../../../src/commands/pinning/unpin';
+import redaxios from 'redaxios';
+import unpin from '../../../src/commands/pinning/unpin';
 
-jest.mock('axios');
+jest.mock('redaxios');
 
 //common values
 const badHashToUnpin = 'test';
@@ -24,7 +24,7 @@ test('200 status is returned', () => {
         status: 200,
         data: 'testData'
     };
-    axios.delete.mockResolvedValue(goodStatus);
+    redaxios.delete.mockResolvedValue(goodStatus);
     expect.assertions(1);
     expect(unpin('test', 'test', goodHashToUnpin)).resolves.toEqual(goodStatus.data);
 });
@@ -33,13 +33,13 @@ test('Result other than 200 status is returned', () => {
     const badStatus = {
         status: 700
     };
-    axios.delete.mockResolvedValue(badStatus);
+    redaxios.delete.mockResolvedValue(badStatus);
     expect.assertions(1);
     expect(unpin('test', 'test', goodHashToUnpin)).rejects.toEqual(Error(`unknown server response while removing pin from IPFS: ${badStatus}`));
 });
 
 test('Rejection handled', () => {
-    axios.delete.mockRejectedValue('test error');
+    redaxios.delete.mockRejectedValue('test error');
     expect.assertions(1);
     expect(unpin('test', 'test', goodHashToUnpin)).rejects.toEqual('test error');
 });

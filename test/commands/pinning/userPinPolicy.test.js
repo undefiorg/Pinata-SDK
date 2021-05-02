@@ -1,7 +1,7 @@
-import axios from 'axios';
-import userPinPolicy from'../../../src/commands/pinning/userPinPolicy';
+import redaxios from 'redaxios';
+import userPinPolicy from '../../../src/commands/pinning/userPinPolicy';
 
-jest.mock('axios');
+jest.mock('redaxios');
 
 //common values
 const newPinPolicy = {
@@ -28,7 +28,7 @@ test('200 status is returned', () => {
         status: 200,
         data: 'testData'
     };
-    axios.put.mockResolvedValue(goodStatus);
+    redaxios.put.mockResolvedValue(goodStatus);
     expect.assertions(1);
     expect(userPinPolicy('test', 'test', newPinPolicy)).resolves.toEqual(goodStatus.data);
 });
@@ -37,13 +37,13 @@ test('Result other than 200 status is returned', () => {
     const badStatus = {
         status: 700
     };
-    axios.put.mockResolvedValue(badStatus);
+    redaxios.put.mockResolvedValue(badStatus);
     expect.assertions(1);
     expect(userPinPolicy('test', 'test', newPinPolicy)).rejects.toEqual(Error(`unknown server response while changing pin policy for user: ${badStatus}`));
 });
 
 test('Rejection handled', () => {
-    axios.put.mockRejectedValue('test error');
+    redaxios.put.mockRejectedValue('test error');
     expect.assertions(1);
     expect(userPinPolicy('test', 'test', newPinPolicy)).rejects.toEqual('test error');
 });

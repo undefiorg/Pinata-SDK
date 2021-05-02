@@ -1,4 +1,4 @@
-import axios from 'axios';
+import redaxios from 'redaxios';
 import { baseUrl } from './../../constants';
 import { validateApiKeys, validateMetadata, validatePinataOptions } from '../../util/validators';
 
@@ -28,7 +28,7 @@ export default function pinJSONToIPFS(pinataApiKey, pinataSecretApiKey, body, op
     const endpoint = `${baseUrl}/pinning/pinJSONToIPFS`;
 
     return new Promise((resolve, reject) => {
-        axios.post(
+        redaxios.post(
             endpoint,
             requestBody,
             {
@@ -38,17 +38,17 @@ export default function pinJSONToIPFS(pinataApiKey, pinataSecretApiKey, body, op
                     'pinata_secret_api_key': pinataSecretApiKey
                 }
             }).then(function (result) {
-            if (result.status !== 200) {
-                reject(new Error(`unknown server response while pinning JSON to IPFS: ${result}`));
-            }
-            resolve(result.data);
-        }).catch(function (error) {
-            //  handle error here
-            if (error && error.response && error.response && error.response.data && error.response.data.error) {
-                reject(new Error(error.response.data.error));
-            } else {
-                reject(error);
-            }
-        });
+                if (result.status !== 200) {
+                    reject(new Error(`unknown server response while pinning JSON to IPFS: ${result}`));
+                }
+                resolve(result.data);
+            }).catch(function (error) {
+                //  handle error here
+                if (error && error.response && error.response && error.response.data && error.response.data.error) {
+                    reject(new Error(error.response.data.error));
+                } else {
+                    reject(error);
+                }
+            });
     });
 }

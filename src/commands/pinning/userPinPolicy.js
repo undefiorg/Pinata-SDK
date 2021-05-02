@@ -1,4 +1,4 @@
-import axios from 'axios';
+import redaxios from 'redaxios';
 import { baseUrl } from './../../constants';
 import { validateApiKeys, validatePinPolicyStructure } from '../../util/validators';
 
@@ -16,7 +16,7 @@ export default function userPinPolicy(pinataApiKey, pinataSecretApiKey, newPinPo
     };
 
     return new Promise((resolve, reject) => {
-        axios.put(
+        redaxios.put(
             endpoint,
             body,
             {
@@ -26,17 +26,17 @@ export default function userPinPolicy(pinataApiKey, pinataSecretApiKey, newPinPo
                     'pinata_secret_api_key': pinataSecretApiKey
                 }
             }).then(function (result) {
-            if (result.status !== 200) {
-                reject(new Error(`unknown server response while changing pin policy for user: ${result}`));
-            }
-            resolve(result.data);
-        }).catch(function (error) {
-            //  handle error here
-            if (error && error.response && error.response && error.response.data && error.response.data.error) {
-                reject(new Error(error.response.data.error));
-            } else {
-                reject(error);
-            }
-        });
+                if (result.status !== 200) {
+                    reject(new Error(`unknown server response while changing pin policy for user: ${result}`));
+                }
+                resolve(result.data);
+            }).catch(function (error) {
+                //  handle error here
+                if (error && error.response && error.response && error.response.data && error.response.data.error) {
+                    reject(new Error(error.response.data.error));
+                } else {
+                    reject(error);
+                }
+            });
     });
 }

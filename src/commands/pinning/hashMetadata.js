@@ -1,4 +1,4 @@
-import axios from 'axios';
+import redaxios from 'redaxios';
 import { baseUrl } from './../../constants';
 import { validateApiKeys, validateMetadata } from '../../util/validators';
 import isIPFS from 'is-ipfs';
@@ -34,7 +34,7 @@ export default function hashMetadata(pinataApiKey, pinataSecretApiKey, ipfsPinHa
     }
 
     return new Promise((resolve, reject) => {
-        axios.put(
+        redaxios.put(
             endpoint,
             body,
             {
@@ -44,17 +44,17 @@ export default function hashMetadata(pinataApiKey, pinataSecretApiKey, ipfsPinHa
                     'pinata_secret_api_key': pinataSecretApiKey
                 }
             }).then(function (result) {
-            if (result.status !== 200) {
-                reject(new Error(`unknown server response while changing metadata for hash: ${result}`));
-            }
-            resolve(result.data);
-        }).catch(function (error) {
-            //  handle error here
-            if (error && error.response && error.response && error.response.data && error.response.data.error) {
-                reject(new Error(error.response.data.error));
-            } else {
-                reject(error);
-            }
-        });
+                if (result.status !== 200) {
+                    reject(new Error(`unknown server response while changing metadata for hash: ${result}`));
+                }
+                resolve(result.data);
+            }).catch(function (error) {
+                //  handle error here
+                if (error && error.response && error.response && error.response.data && error.response.data.error) {
+                    reject(new Error(error.response.data.error));
+                } else {
+                    reject(error);
+                }
+            });
     });
 }

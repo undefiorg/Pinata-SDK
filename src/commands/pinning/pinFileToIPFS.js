@@ -1,8 +1,8 @@
-import axios from 'axios';
+import redaxios from 'redaxios';
 import { baseUrl } from './../../constants';
 import NodeFormData from 'form-data';
 import stream from 'stream';
-import {validateApiKeys, validateMetadata, validatePinataOptions} from '../../util/validators';
+import { validateApiKeys, validateMetadata, validatePinataOptions } from '../../util/validators';
 
 export default function pinFileToIPFS(pinataApiKey, pinataSecretApiKey, readStream, options) {
     validateApiKeys(pinataApiKey, pinataSecretApiKey);
@@ -30,12 +30,12 @@ export default function pinFileToIPFS(pinataApiKey, pinataSecretApiKey, readStre
             }
         }
 
-        axios.post(
+        redaxios.post(
             endpoint,
             data,
             {
                 withCredentials: true,
-                maxContentLength: 'Infinity', //this is needed to prevent axios from erroring out with large files
+                maxContentLength: 'Infinity', //this is needed to prevent redaxios from erroring out with large files
                 maxBodyLength: 'Infinity',
                 headers: {
                     'Content-type': `multipart/form-data; boundary= ${data._boundary}`,
@@ -43,17 +43,17 @@ export default function pinFileToIPFS(pinataApiKey, pinataSecretApiKey, readStre
                     'pinata_secret_api_key': pinataSecretApiKey
                 }
             }).then(function (result) {
-            if (result.status !== 200) {
-                reject(new Error(`unknown server response while pinning File to IPFS: ${result}`));
-            }
-            resolve(result.data);
-        }).catch(function (error) {
-            //  handle error here
-            if (error && error.response && error.response.data && error.response.data.error) {
-                reject(new Error(error.response.data.error));
-            } else {
-                reject(error);
-            }
-        });
+                if (result.status !== 200) {
+                    reject(new Error(`unknown server response while pinning File to IPFS: ${result}`));
+                }
+                resolve(result.data);
+            }).catch(function (error) {
+                //  handle error here
+                if (error && error.response && error.response.data && error.response.data.error) {
+                    reject(new Error(error.response.data.error));
+                } else {
+                    reject(error);
+                }
+            });
     });
 }

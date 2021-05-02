@@ -1,7 +1,7 @@
-import axios from 'axios';
-import pinFileToIPFS from'../../../src/commands/pinning/pinFileToIPFS';
+import redaxios from 'redaxios';
+import pinFileToIPFS from '../../../src/commands/pinning/pinFileToIPFS';
 import fs from 'fs';
-jest.mock('axios');
+jest.mock('redaxios');
 
 //common values
 const nonStream = 'test';
@@ -19,7 +19,7 @@ test('200 status is returned', () => {
         status: 200,
         data: 'testData'
     };
-    axios.post.mockResolvedValue(goodStatus);
+    redaxios.post.mockResolvedValue(goodStatus);
     expect.assertions(1);
     expect(pinFileToIPFS('test', 'test', validStream)).resolves.toEqual(goodStatus.data);
 });
@@ -28,13 +28,13 @@ test('Result other than 200 status is returned', () => {
     const badStatus = {
         status: 700
     };
-    axios.post.mockResolvedValue(badStatus);
+    redaxios.post.mockResolvedValue(badStatus);
     expect.assertions(1);
     expect(pinFileToIPFS('test', 'test', validStream)).rejects.toEqual(Error(`unknown server response while pinning File to IPFS: ${badStatus}`));
 });
 
 test('Rejection handled', () => {
-    axios.post.mockRejectedValue('test error');
+    redaxios.post.mockRejectedValue('test error');
     expect.assertions(1);
     expect(pinFileToIPFS('test', 'test', validStream)).rejects.toEqual('test error');
 });

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import redaxios from 'redaxios';
 import { baseUrl } from './../../../constants';
 import { validateApiKeys } from '../../../util/validators';
 import queryBuilder from './queryBuilder';
@@ -13,7 +13,7 @@ export default function pinJobs(pinataApiKey, pinataSecretApiKey, filters) {
     }
 
     return new Promise((resolve, reject) => {
-        axios.get(
+        redaxios.get(
             endpoint,
             {
                 withCredentials: true,
@@ -22,17 +22,17 @@ export default function pinJobs(pinataApiKey, pinataSecretApiKey, filters) {
                     'pinata_secret_api_key': pinataSecretApiKey
                 }
             }).then(function (result) {
-            if (result.status !== 200) {
-                reject(new Error(`unknown server response while attempting to retrieve pin jobs: ${result}`));
-            }
-            resolve(result.data);
-        }).catch(function (error) {
-            //  handle error here
-            if (error && error.response && error.response && error.response.data && error.response.data.error) {
-                reject(new Error(error.response.data.error));
-            } else {
-                reject(error);
-            }
-        });
+                if (result.status !== 200) {
+                    reject(new Error(`unknown server response while attempting to retrieve pin jobs: ${result}`));
+                }
+                resolve(result.data);
+            }).catch(function (error) {
+                //  handle error here
+                if (error && error.response && error.response && error.response.data && error.response.data.error) {
+                    reject(new Error(error.response.data.error));
+                } else {
+                    reject(error);
+                }
+            });
     });
 }

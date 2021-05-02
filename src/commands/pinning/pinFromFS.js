@@ -1,7 +1,7 @@
-import axios from 'axios';
+import redaxios from 'redaxios';
 import { baseUrl } from './../../constants';
 import NodeFormData from 'form-data';
-import {validateApiKeys, validateMetadata, validatePinataOptions} from '../../util/validators';
+import { validateApiKeys, validateMetadata, validatePinataOptions } from '../../util/validators';
 import basePathConverter from 'base-path-converter';
 const fs = require('fs');
 const recursive = require('recursive-fs');
@@ -33,12 +33,12 @@ export default function pinFromFS(pinataApiKey, pinataSecretApiKey, sourcePath, 
                     }
                 }
 
-                axios.post(
+                redaxios.post(
                     endpoint,
                     data,
                     {
                         withCredentials: true,
-                        maxContentLength: 'Infinity', //this is needed to prevent axios from erroring out with large directories
+                        maxContentLength: 'Infinity', //this is needed to prevent redaxios from erroring out with large directories
                         maxBodyLength: 'Infinity',
                         headers: {
                             'Content-type': `multipart/form-data; boundary= ${data._boundary}`,
@@ -46,18 +46,18 @@ export default function pinFromFS(pinataApiKey, pinataSecretApiKey, sourcePath, 
                             'pinata_secret_api_key': pinataSecretApiKey
                         }
                     }).then(function (result) {
-                    if (result.status !== 200) {
-                        reject(new Error(`unknown server response while pinning File to IPFS: ${result}`));
-                    }
-                    resolve(result.data);
-                }).catch(function (error) {
-                    //  handle error here
-                    if (error && error.response && error.response && error.response.data && error.response.data.error) {
-                        reject(new Error(error.response.data.error));
-                    } else {
-                        reject(error);
-                    }
-                });
+                        if (result.status !== 200) {
+                            reject(new Error(`unknown server response while pinning File to IPFS: ${result}`));
+                        }
+                        resolve(result.data);
+                    }).catch(function (error) {
+                        //  handle error here
+                        if (error && error.response && error.response && error.response.data && error.response.data.error) {
+                            reject(new Error(error.response.data.error));
+                        } else {
+                            reject(error);
+                        }
+                    });
             } else {
                 recursive.readdirr(sourcePath, function (err, dirs, files) {
                     if (err) {
@@ -84,31 +84,31 @@ export default function pinFromFS(pinataApiKey, pinataSecretApiKey, sourcePath, 
                         }
                     }
 
-                    axios.post(
+                    redaxios.post(
                         endpoint,
                         data,
                         {
                             withCredentials: true,
                             maxContentLength: 'Infinity',
-                            maxBodyLength: 'Infinity', //this is needed to prevent axios from erroring out with large directories
+                            maxBodyLength: 'Infinity', //this is needed to prevent redaxios from erroring out with large directories
                             headers: {
                                 'Content-type': `multipart/form-data; boundary= ${data._boundary}`,
                                 'pinata_api_key': pinataApiKey,
                                 'pinata_secret_api_key': pinataSecretApiKey
                             }
                         }).then(function (result) {
-                        if (result.status !== 200) {
-                            reject(new Error(`unknown server response while pinning File to IPFS: ${result}`));
-                        }
-                        resolve(result.data);
-                    }).catch(function (error) {
-                        //  handle error here
-                        if (error && error.response && error.response && error.response.data && error.response.data.error) {
-                            reject(new Error(error.response.data.error));
-                        } else {
-                            reject(error);
-                        }
-                    });
+                            if (result.status !== 200) {
+                                reject(new Error(`unknown server response while pinning File to IPFS: ${result}`));
+                            }
+                            resolve(result.data);
+                        }).catch(function (error) {
+                            //  handle error here
+                            if (error && error.response && error.response && error.response.data && error.response.data.error) {
+                                reject(new Error(error.response.data.error));
+                            } else {
+                                reject(error);
+                            }
+                        });
                 });
             }
         });

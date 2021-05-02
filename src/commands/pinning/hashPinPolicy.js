@@ -1,4 +1,4 @@
-import axios from 'axios';
+import redaxios from 'redaxios';
 import { baseUrl } from './../../constants';
 import { validateApiKeys, validatePinPolicyStructure } from '../../util/validators';
 import isIPFS from 'is-ipfs';
@@ -26,7 +26,7 @@ export default function hashPinPolicy(pinataApiKey, pinataSecretApiKey, ipfsPinH
     };
 
     return new Promise((resolve, reject) => {
-        axios.put(
+        redaxios.put(
             endpoint,
             body,
             {
@@ -36,17 +36,17 @@ export default function hashPinPolicy(pinataApiKey, pinataSecretApiKey, ipfsPinH
                     'pinata_secret_api_key': pinataSecretApiKey
                 }
             }).then(function (result) {
-            if (result.status !== 200) {
-                reject(new Error(`unknown server response while changing pin policy for hash: ${result}`));
-            }
-            resolve(result.data);
-        }).catch(function (error) {
-            //  handle error here
-            if (error && error.response && error.response && error.response.data && error.response.data.error) {
-                reject(new Error(error.response.data.error));
-            } else {
-                reject(error);
-            }
-        });
+                if (result.status !== 200) {
+                    reject(new Error(`unknown server response while changing pin policy for hash: ${result}`));
+                }
+                resolve(result.data);
+            }).catch(function (error) {
+                //  handle error here
+                if (error && error.response && error.response && error.response.data && error.response.data.error) {
+                    reject(new Error(error.response.data.error));
+                } else {
+                    reject(error);
+                }
+            });
     });
 }

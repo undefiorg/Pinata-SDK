@@ -1,4 +1,4 @@
-import axios from 'axios';
+import redaxios from 'redaxios';
 import { baseUrl } from './../../constants';
 import { validateApiKeys, validateMetadata } from '../../util/validators';
 import isIPFS from 'is-ipfs';
@@ -30,7 +30,7 @@ export default function pinByHash(pinataApiKey, pinataSecretApiKey, hashToPin, o
     }
 
     return new Promise((resolve, reject) => {
-        axios.post(
+        redaxios.post(
             endpoint,
             body,
             {
@@ -40,17 +40,17 @@ export default function pinByHash(pinataApiKey, pinataSecretApiKey, hashToPin, o
                     'pinata_secret_api_key': pinataSecretApiKey
                 }
             }).then(function (result) {
-            if (result.status !== 200) {
-                reject(new Error(`unknown server response while adding to pin queue: ${result}`));
-            }
-            resolve(result.data);
-        }).catch(function (error) {
-            //  handle error here
-            if (error && error.response && error.response && error.response.data && error.response.data.error) {
-                reject(new Error(error.response.data.error));
-            } else {
-                reject(error);
-            }
-        });
+                if (result.status !== 200) {
+                    reject(new Error(`unknown server response while adding to pin queue: ${result}`));
+                }
+                resolve(result.data);
+            }).catch(function (error) {
+                //  handle error here
+                if (error && error.response && error.response && error.response.data && error.response.data.error) {
+                    reject(new Error(error.response.data.error));
+                } else {
+                    reject(error);
+                }
+            });
     });
 }

@@ -1,6 +1,6 @@
-import axios from 'axios';
+import redaxios from 'redaxios';
 import { baseUrl } from './../../constants';
-import {validateApiKeys} from '../../util/validators';
+import { validateApiKeys } from '../../util/validators';
 
 export default function testAuthentication(pinataApiKey, pinataSecretApiKey) {
     validateApiKeys(pinataApiKey, pinataSecretApiKey);
@@ -9,7 +9,7 @@ export default function testAuthentication(pinataApiKey, pinataSecretApiKey) {
     const endpoint = `${baseUrl}/data/testAuthentication`;
 
     return new Promise((resolve, reject) => {
-        axios.get(
+        redaxios.get(
             endpoint,
             {
                 withCredentials: true,
@@ -18,18 +18,18 @@ export default function testAuthentication(pinataApiKey, pinataSecretApiKey) {
                     'pinata_secret_api_key': pinataSecretApiKey
                 }
             }).then(function (result) {
-            if (result.status !== 200) {
-                reject(new Error(`unknown server response while authenticating: ${result}`));
-            }
-            resolve({
-                authenticated: true
+                if (result.status !== 200) {
+                    reject(new Error(`unknown server response while authenticating: ${result}`));
+                }
+                resolve({
+                    authenticated: true
+                });
+            }).catch(function (error) {
+                if (error && error.response && error.response && error.response.data && error.response.data.error) {
+                    reject(new Error(error.response.data.error));
+                } else {
+                    reject(error);
+                }
             });
-        }).catch(function (error) {
-            if (error && error.response && error.response && error.response.data && error.response.data.error) {
-                reject(new Error(error.response.data.error));
-            } else {
-                reject(error);
-            }
-        });
     });
 };
